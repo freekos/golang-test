@@ -1,18 +1,23 @@
 package main
 
 import (
-	"net/http"
+	"fmt"
+	"freekos/crud/configs"
+	"freekos/crud/pkg/controllers"
+	"freekos/crud/pkg/models"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
 
-	r.Run("localhost:8080")
+	models.ConnectDatabase()
+
+	r.POST("/posts", controllers.CreatePost)
+	r.GET("/posts", controllers.FindPosts)
+	r.GET("/posts/:id", controllers.FindPost)
+	r.PUT("/posts", controllers.UpdatePost)
+
+	r.Run(fmt.Sprintf("%v:%v", configs.Config.HOST, configs.Config.PORT))
 }
